@@ -1,39 +1,37 @@
 import json
-import pprint
+import os
+import time
 
+from car import CarUtils
+from database import DatabaseManager
 from search_tool import SearchTool
 
+db = DatabaseManager.init()
+cars_collection = db["cars"]
+print("connected to database")
+
 # number_of_pages = SearchTool.get_number_of_pages()
-#
-# for i in range(0, number_of_pages + 1):
-#     data = SearchTool.get_result_for_page(i)
-#     # database.
-#
+number_of_pages = 0
 
+starting_point = 0
 
-a = SearchTool.get_result_for_page(1)
+for i in range(starting_point, number_of_pages + 1):
+    list_of_cars = []
 
-b = json.loads(a)
-ads = b["data"]["ads"]
-print(len(ads))
+    print(f"getting data for page {i} / {number_of_pages}")
+    data = SearchTool.get_result_for_page(i)
+    b = json.loads(data)
+    ads = b["data"]["ads"]
 
+    for ad in ads:
+        car = CarUtils.create_car(ad)
+        list_of_cars.append(car)
 
-# pprint.pprint(b)
+    DatabaseManager.insert_many_if_duplicate_pass(cars_collection, list_of_cars)
+    print(f"wrote page {i} result to database.")
 
-def get_brand_and_model(i):
-    aaa = i["breadcrump"]["links"][-3]["url"].split("/")[-1].split('-')
-    brand = aaa[0]
-    model = aaa[1]
+    os.system(f"echo {i} -> lastIndex.txt")
 
-    return brand, model
+    # time.sleep(3)
 
-
-for i in ads:
-    a, b = get_brand_and_model(i)
-    detail = i["detail"]
-    specs = i["specs"]
-    print(a, b, detail["year"], detail["fuel"], detail["body_color"], detail["body_type"], detail["body_status"],
-          detail["inside_color"],
-          detail["mileage"], specs["acceleration"], specs["engine"], specs["fuel"], specs["volume"],
-          i["price"]["price"])
-    s = i["metadata"]["canonical"]
+print("finished all pages.")

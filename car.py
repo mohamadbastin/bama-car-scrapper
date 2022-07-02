@@ -45,3 +45,93 @@ class Car:
             "volume": float(self.specs.volume)
         }
         return data
+
+
+class CarUtils:
+    @staticmethod
+    def create_car(data):
+        brand, model = CarUtils._get_brand_and_model(data)
+        detail = data["detail"]
+        year = CarUtils._clean_year(detail["year"])
+        fuel_type = detail["fuel"]
+        body_color = detail["body_color"],
+        body_type = detail["body_type"],
+        body_status = detail["body_status"],
+        inside_color = detail["inside_color"],
+        mileage = CarUtils._clean_mileage(detail["mileage"]),
+        specs = data["specs"]
+        acceleration = CarUtils._clean_acceleration(specs["acceleration"]),
+        engine = specs["engine"],
+        fuel_consumption = CarUtils._clean_fuel_consumption(specs["fuel"]),
+        volume = CarUtils._clean_volume(specs["volume"]),
+        price = CarUtils._clean_price(data["price"]["price"])
+        url = data["metadata"]["canonical"]
+
+        car_details = CarDetail(year, fuel_type, body_color, body_type, body_status, inside_color, mileage)
+        car_specs = CarSpecs(acceleration, engine, fuel_consumption, volume)
+
+        car = Car(url, brand, model, car_details, car_specs, price)
+
+        return car
+
+    @staticmethod
+    def _get_brand_and_model(i):
+        aaa = i["breadcrump"]["links"][-3]["url"].split("/")[-1].split('-')
+        brand = aaa[0]
+        model = aaa[1]
+
+        return brand, model
+
+    @staticmethod
+    def _clean_year(year):
+        if year is not None:
+            if year[0] == "1":
+                year2 = int(year) + 621
+                return year2
+            return int(year)
+
+    @staticmethod
+    def _clean_mileage(mileage):
+        if mileage:
+            if "صفر" in mileage:
+                return 0
+            else:
+                m = mileage.split(" ")[0]
+                m2 = m.split(",")
+                m3 = ""
+                for i in m2:
+                    m3 += i
+                try:
+                    return int(m3)
+                except:
+                    return None
+
+    @staticmethod
+    def _clean_acceleration(acc):
+        if acc:
+            acc2 = float(acc.split(" ")[0])
+            return acc2
+
+    @staticmethod
+    def _clean_fuel_consumption(acc):
+        if acc:
+            acc2 = float(acc.split(" ")[0])
+            return acc2
+
+    @staticmethod
+    def _clean_volume(acc):
+        if acc:
+            acc2 = float(acc.split(" ")[0])
+            return acc2
+
+    @staticmethod
+    def _clean_price(p):
+        if p:
+            p2 = p.split(",")
+            p3 = ""
+            for i in p2:
+                p3 += i
+            try:
+                return int(p3)
+            except:
+                return None

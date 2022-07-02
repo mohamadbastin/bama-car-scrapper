@@ -9,7 +9,7 @@ class SearchParser:
         pass
 
     @staticmethod
-    def parse_number_of_pages(data: list):
+    def parse_number_of_pages(data: str):
         seed = '"total_pages":'
         idx = data.index(seed)
         d = len(seed)

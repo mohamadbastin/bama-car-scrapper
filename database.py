@@ -8,7 +8,7 @@ class DatabaseManager:
     def init():
         my_client = pymongo.MongoClient("mongodb://localhost:27017/")
 
-        db = my_client["mydatabase"]
+        db = my_client["bama"]
         DatabaseManager.db = db
         return db
 

@@ -36,3 +36,4 @@ for i in ads:
           detail["inside_color"],
           detail["mileage"], specs["acceleration"], specs["engine"], specs["fuel"], specs["volume"],
           i["price"]["price"])
+    s = i["metadata"]["canonical"]

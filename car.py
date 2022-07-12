@@ -1,5 +1,5 @@
 class CarDetail:
-    def __init__(self, year, fuel, body_color, body_type, body_status, inside_color, mileage):
+    def __init__(self, year: int, fuel, body_color, body_type, body_status, inside_color, mileage):
         self.year = year
         self.fuel = fuel
         self.body_color = body_color
@@ -27,6 +27,11 @@ class Car:
         self.price = price
 
     def get_data(self):
+        # print(self.details.mileage)
+        # print(self.specs.acceleration)
+        # print(self.specs.volume)
+        # print(self.specs.engine)
+        # print(self.specs.fuel)
         data = {
             "url": str(self.url),
             "brand": str(self.brand),
@@ -34,27 +39,27 @@ class Car:
             "price": int(self.price),
             "year": int(self.details.year),
             "fuel_type": str(self.details.fuel),
-            "body_color": str(self.details.body_color),
-            "body_type": str(self.details.body_type),
-            "body_status": str(self.details.body_status),
-            "inside_color": str(self.details.inside_color),
-            "mileage": int(self.details.mileage),
-            "acceleration": float(self.specs.acceleration),
-            "engine": float(self.specs.engine),
-            "fuel_consumption": float(self.specs.fuel),
-            "volume": float(self.specs.volume)
+            "body_color": str(self.details.body_color[0]),
+            "body_type": str(self.details.body_type[0]),
+            "body_status": str(self.details.body_status[0]),
+            "inside_color": str(self.details.inside_color[0]),
+            "mileage": self.details.mileage[0],
+            "acceleration": self.specs.acceleration[0],
+            "engine": str(self.specs.engine[0]),
+            "fuel_consumption": self.specs.fuel[0],
+            "volume": self.specs.volume[0]
         }
         return data
 
 
 class CarUtils:
     @staticmethod
-    def create_car(data):
+    def create_car(data: dict):
         brand, model = CarUtils._get_brand_and_model(data)
         detail = data["detail"]
         year = CarUtils._clean_year(detail["year"])
         fuel_type = detail["fuel"]
-        body_color = detail["body_color"],
+        body_color = str(detail["body_color"]),
         body_type = detail["body_type"],
         body_status = detail["body_status"],
         inside_color = detail["inside_color"],
@@ -102,15 +107,21 @@ class CarUtils:
                 for i in m2:
                     m3 += i
                 try:
+                    # print(m3)
                     return int(m3)
+
                 except:
                     return None
+        return None
 
     @staticmethod
     def _clean_acceleration(acc):
         if acc:
-            acc2 = float(acc.split(" ")[0])
-            return acc2
+            try:
+                acc2 = float(acc.split(" ")[0])
+                return acc2
+            except:
+                return None
 
     @staticmethod
     def _clean_fuel_consumption(acc):
